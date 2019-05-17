@@ -2,9 +2,10 @@ package model.neural
 
 import model.fourier.FourierHypersurface
 import model.fourier.FourierSeries
-import java.lang.Exception
+import util.Visitable
+import util.Visitor
 
-interface Neuron {
+interface Neuron : Visitable {
     fun calculate(): Double
     val inputsCount: Int
 }
@@ -32,6 +33,10 @@ class InputNeuron : Neuron {
 
     override fun calculate(): Double = value
 
+    override fun accept(v: Visitor) {
+        v.visit(this)
+    }
+
     override val inputsCount: Int
         get() = 1
 }
@@ -56,6 +61,10 @@ class InternalNeuron : ChainableNeuron() {
         }
     }
 
+    override fun accept(v: Visitor) {
+        v.visit(this)
+    }
+
     fun addPreviousNeuron(neuron: Neuron, consumer: () -> FourierSeries) {
         super.addPreviousNeuron(neuron)
         activationFunction.dimensions.add(consumer())
@@ -76,6 +85,22 @@ class OutputNeuron : ChainableNeuron() {
     protected var inputCache: DoubleArray? = null
     protected var cachedResult: Double = 0.0
 
+    override fun accept(v: Visitor) {
+        v.visit(this)
+    }
+
+    fun addPreviousNeuron(neuron: Neuron, weight: Double) {
+        super.addPreviousNeuron(neuron)
+        weights.add(weight)
+        inputCache = null
+    }
+
+    fun addPreviousNeurons(neurons: Collection<Neuron>, consumer: (Int) -> Double) {
+        super.addPreviousNeurons(neurons)
+        weights.addAll(Array(neurons.size, consumer))
+        inputCache = null
+    }
+
     override fun calculate(): Double {
         val inputValues = DoubleArray(inputsCount) {
             previousNeurons[it].calculate()
@@ -84,7 +109,7 @@ class OutputNeuron : ChainableNeuron() {
         return if (inputCache?.contentEquals(inputValues) == true) {
             cachedResult
         } else {
-            var result: Double = 0.0
+            var result = 0.0
             inputValues.forEachIndexed { index, value ->
                 result += value * weights[index]
             }

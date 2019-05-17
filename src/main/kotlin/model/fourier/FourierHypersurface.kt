@@ -1,6 +1,13 @@
 package model.fourier
 
-class FourierHypersurface() {
+import util.Visitable
+import util.Visitor
+
+class FourierHypersurface() : Visitable {
+    override fun accept(v: Visitor) {
+        v.visit(this)
+    }
+
     val dimensions: ArrayList<FourierSeries> = ArrayList()
 
     val arity: Int
@@ -18,7 +25,7 @@ class FourierHypersurface() {
             "Arguments count and function arity is incompatible"
         }
 
-        var result: Double = 0.0
+        var result = 0.0
         dimensions.forEachIndexed { i, series ->
             result += series.calculate(x[i], t)
         }

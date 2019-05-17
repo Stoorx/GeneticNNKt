@@ -1,8 +1,10 @@
 package model.fourier
 
 import util.SingleRandom
+import util.Visitable
+import util.Visitor
 
-open class FourierSeries() {
+open class FourierSeries() : Visitable {
     val elements: ArrayList<FourierElement> = ArrayList()
     val length: Int
         get() = elements.size
@@ -14,8 +16,12 @@ open class FourierSeries() {
         }
     }
 
+    override fun accept(v: Visitor) {
+        v.visit(this)
+    }
+
     open fun calculate(x: Double, t: Double): Double {
-        var result: Double = 0.0
+        var result = 0.0
         elements.forEachIndexed { i, element ->
             result += element.calculate(x, i, t)
         }
