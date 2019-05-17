@@ -5,6 +5,7 @@ import model.fourier.FourierHypersurface
 import model.fourier.FourierSeries
 import model.fourier.PitchedFourierSeries
 import model.neural.*
+import util.SingleRandom
 
 fun Model.crossover(other: Model): Model {
     val model = Model()
@@ -43,7 +44,11 @@ private fun Neuron.crossover(other: Neuron): Neuron {
 
                 val neuron = InternalNeuron()
 
-                neuron.t = (this.t + other.t) / 2
+                neuron.t =
+                    if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
+                        (this.t + other.t) / 2
+                    else
+                        SingleRandom.nextDouble()
 
                 neuron.activationFunction =
                     FourierHypersurface(activationFunction.arity) {
@@ -59,7 +64,10 @@ private fun Neuron.crossover(other: Neuron): Neuron {
 
                 for (i in 0..this.weights.size) {
                     neuron.weights.add(
-                        (this.weights[i] + other.weights[i]) / 2
+                        if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
+                            (this.weights[i] + other.weights[i]) / 2
+                        else
+                            SingleRandom.nextDouble()
                     )
                 }
 
@@ -87,7 +95,13 @@ private fun FourierSeries.crossover(other: FourierSeries): FourierSeries {
             other as PitchedFourierSeries
 
             val pfs = PitchedFourierSeries()
-            pfs.pitch = (this.pitch + other.pitch) / 2
+
+            pfs.pitch =
+                if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
+                    (this.pitch + other.pitch) / 2
+                else
+                    SingleRandom.nextDouble()
+
             fs = pfs
         }
 
@@ -95,8 +109,14 @@ private fun FourierSeries.crossover(other: FourierSeries): FourierSeries {
         for (i in 0..this.elements.size) {
             fs.elements.add(
                 FourierElement(
-                    (this.elements[i].amplitude + other.elements[i].amplitude) / 2,
-                    (this.elements[i].phase + other.elements[i].phase) / 2
+                    if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
+                        (this.elements[i].amplitude + other.elements[i].amplitude) / 2
+                    else
+                        SingleRandom.nextDouble(),
+                    if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
+                        (this.elements[i].phase + other.elements[i].phase) / 2
+                    else
+                        SingleRandom.nextDouble()
                 )
             )
         }
