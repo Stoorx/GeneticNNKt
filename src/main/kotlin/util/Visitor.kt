@@ -6,6 +6,7 @@ import model.fourier.FourierSeries
 import model.fourier.PitchedFourierSeries
 import model.neural.InputNeuron
 import model.neural.InternalNeuron
+import model.neural.NeuronLayer
 import model.neural.OutputNeuron
 
 interface Visitor {
@@ -16,8 +17,6 @@ interface Visitor {
     fun visit(e: InternalNeuron)
     fun visit(e: InputNeuron)
     fun visit(e: OutputNeuron)
+    fun visit(e: NeuronLayer)
 }
 
-interface Visitable {
-    fun accept(v: Visitor)
-}
