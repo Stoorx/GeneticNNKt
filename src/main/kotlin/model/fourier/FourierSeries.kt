@@ -5,6 +5,16 @@ import util.Visitable
 import util.Visitor
 
 open class FourierSeries() : Visitable {
+    companion object {
+        fun createFromRandom(length: Int): FourierSeries =
+            FourierSeries(length).apply {
+                elements.forEach {
+                    it.amplitude = SingleRandom.nextDouble()
+                    it.phase = SingleRandom.nextDouble()
+                }
+            }
+    }
+
     val elements: ArrayList<FourierElement> = ArrayList()
     val length: Int
         get() = elements.size
@@ -29,10 +39,4 @@ open class FourierSeries() : Visitable {
     }
 }
 
-fun FourierSeries.createFromRandom(length: Int): FourierSeries =
-    FourierSeries(length).also {
-        elements.forEach {
-            it.amplitude = SingleRandom.nextDouble()
-            it.phase = SingleRandom.nextDouble()
-        }
-    }
+

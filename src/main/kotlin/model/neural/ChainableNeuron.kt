@@ -1,7 +1,7 @@
 package model.neural
 
 abstract class ChainableNeuron protected constructor() : Neuron {
-    protected val previousNeurons: ArrayList<Neuron> = ArrayList()
+    val previousNeurons: ArrayList<Neuron> = ArrayList()
     final override val inputsCount: Int
         get() = previousNeurons.size
 

@@ -4,6 +4,18 @@ import util.SingleRandom
 import util.Visitor
 
 class PitchedFourierSeries : FourierSeries {
+    companion object {
+        @JvmStatic
+        fun createFromRandom(length: Int): FourierSeries =
+            PitchedFourierSeries(length).apply {
+                elements.forEach {
+                    it.amplitude = SingleRandom.nextDouble()
+                    it.phase = SingleRandom.nextDouble()
+                }
+                pitch = SingleRandom.nextDouble()
+            }
+    }
+
     var pitch: Double = 0.0
 
     constructor():super()
@@ -18,11 +30,3 @@ class PitchedFourierSeries : FourierSeries {
     }
 }
 
-fun PitchedFourierSeries.createFromRandom(length: Int): FourierSeries =
-    PitchedFourierSeries(length).also {
-        elements.forEach {
-            it.amplitude = SingleRandom.nextDouble()
-            it.phase = SingleRandom.nextDouble()
-        }
-        pitch = SingleRandom.nextDouble()
-    }

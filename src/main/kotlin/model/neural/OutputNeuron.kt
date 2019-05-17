@@ -3,7 +3,7 @@ package model.neural
 import util.Visitor
 
 class OutputNeuron : ChainableNeuron() {
-    protected val weights: MutableList<Double> = ArrayList()
+    val weights: MutableList<Double> = ArrayList()
 
     protected var inputCache: DoubleArray? = null
     protected var cachedResult: Double = 0.0

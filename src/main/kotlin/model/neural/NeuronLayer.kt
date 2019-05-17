@@ -6,6 +6,9 @@ import util.Visitor
 class NeuronLayer : Visitable {
     val neurons: MutableList<Neuron> = ArrayList()
 
+    fun addPreviousLayer() {
+
+    }
     override fun accept(v: Visitor) {
         v.visit(this)
     }

@@ -5,8 +5,14 @@ import model.fourier.FourierSeries
 import util.Visitor
 
 class InternalNeuron : ChainableNeuron() {
-    protected val activationFunction: FourierHypersurface = FourierHypersurface()
-    var t: Double = 0.0
+    var activationFunction: FourierHypersurface = FourierHypersurface()
+        get
+        set(value) {
+            field = activationFunction
+            inputCache = null
+        }
+
+    var t: Double = 1.0
 
     protected var inputCache: DoubleArray? = null
     protected var cachedResult: Double = 0.0

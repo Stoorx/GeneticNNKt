@@ -13,9 +13,9 @@ class FourierHypersurface() : Visitable {
     val arity: Int
         get() = dimensions.size
 
-    constructor(length: Int, consumer: (Int) -> FourierSeries) : this() {
-        dimensions.ensureCapacity(length)
-        for (i in 0..length) {
+    constructor(arity: Int, consumer: (Int) -> FourierSeries) : this() {
+        dimensions.ensureCapacity(arity)
+        for (i in 0..arity) {
             dimensions.add(consumer(i))
         }
     }
@@ -33,5 +33,3 @@ class FourierHypersurface() : Visitable {
     }
 }
 
-fun FourierHypersurface.createFromRandom(length: Int, consumer: (Int) -> FourierSeries): FourierHypersurface =
-    FourierHypersurface(length, consumer)
