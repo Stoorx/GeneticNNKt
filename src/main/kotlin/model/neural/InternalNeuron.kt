@@ -8,7 +8,7 @@ class InternalNeuron : ChainableNeuron() {
     var activationFunction: FourierHypersurface = FourierHypersurface()
         get
         set(value) {
-            field = activationFunction
+            field = value
             inputCache = null
         }
 

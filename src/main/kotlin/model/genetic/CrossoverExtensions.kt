@@ -50,11 +50,17 @@ private fun Neuron.crossover(other: Neuron): Neuron {
                     else
                         SingleRandom.nextDouble()
 
-                neuron.activationFunction =
-                    FourierHypersurface(activationFunction.arity) {
-                        activationFunction.dimensions[it].crossover(other.activationFunction.dimensions[it])
-                    }
 
+                val fhs = FourierHypersurface(activationFunction.arity) {
+                    activationFunction
+                        .dimensions[it]
+                        .crossover(
+                            other
+                                .activationFunction
+                                .dimensions[it]
+                        )
+                    }
+                neuron.activationFunction = fhs
                 return neuron
             }
             is OutputNeuron -> {

@@ -69,13 +69,15 @@ fun main(args: Array<String>) {
         }
 
         val eSteps: Int = 10
-
+        var stepCounter = 0
         for (s in 0 until eSteps) {
-            val errors = gs.calculateError()
-            errors.forEachIndexed { index, pair ->
-                println("$index: ${pair.second}")
-            }
+            val errors = gs.calculateError().sortedBy { it.second }
+//            errors.forEachIndexed { index, pair ->
+//                println("$stepCounter::$index|> ${pair.second}")
+//            }
+            println("$stepCounter, ${errors[0].second}")
             gs.evolutionStep()
+            stepCounter++
         }
 
     } catch (e: Exception) {
