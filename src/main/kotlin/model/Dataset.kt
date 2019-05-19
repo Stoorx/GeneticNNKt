@@ -36,6 +36,7 @@ data class DatasetElement(
 
 class Dataset {
     val dataPoints: ArrayList<DatasetElement> = ArrayList()
+    var function: ((DoubleArray) -> Double)? = null
     override fun toString(): String {
         val sb = StringBuilder()
         dataPoints.forEach {
@@ -58,7 +59,7 @@ class Dataset {
 
             for (i in 0..count) {
                 val inputVector = DoubleArray(lowerBounds.size) {
-                    val randomDouble = SingleRandom.nextDouble()
+                    val randomDouble = SingleRandom.doubleZeroToOne()
                     (upperBounds[it] - lowerBounds[it]) * randomDouble + lowerBounds[it]
                 }
                 val dsElement = DatasetElement(
@@ -67,7 +68,7 @@ class Dataset {
                 )
                 ds.dataPoints.add(dsElement)
             }
-
+            ds.function = function
             return ds
         }
     }

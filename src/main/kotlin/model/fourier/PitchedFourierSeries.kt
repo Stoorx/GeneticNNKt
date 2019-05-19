@@ -18,7 +18,7 @@ class PitchedFourierSeries : FourierSeries {
 
     var pitch: Double = 0.0
 
-    constructor():super()
+    constructor() : super()
     constructor(length: Int) : super(length)
 
     override fun accept(v: Visitor) {

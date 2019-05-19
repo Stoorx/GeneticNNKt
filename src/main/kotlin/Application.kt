@@ -12,9 +12,9 @@ import java.lang.Math.pow
 import kotlin.math.E
 import kotlin.math.log
 
-fun main(args: Array<String>) {
+fun main() {
     try {
-        val ds = Dataset.generateFromFunction(DoubleArray(1) { -10.0 }, DoubleArray(1) { 10.0 }, 100) {
+        val ds = Dataset.generateFromFunction(DoubleArray(1) { -10.0 }, DoubleArray(1) { 10.0 }, 150) {
             val x = it[0]
             log(1 + pow(E, x), E) //1
             // pow(E, x) / cos(x)
@@ -25,17 +25,21 @@ fun main(args: Array<String>) {
 
         val gs = GeneticSolver()
         gs.dataset = ds
+        GeneticSolver.maxPopulation = 100
+        GeneticSolver.mutationRate = 0.15
+        GeneticSolver.goodRatio = 0.40
 
-        val startPopulationCount = 10
-        val layersCount = 5
-        val internalNeuronsInLayer = 10
-        val activationLength = 5
+        val startPopulationCount = 20
+        val layersCount = 4
+        val internalNeuronsInLayer = 3
+        val activationLength = 3
         val inputNeuronsCount = 1
         val outputNeuronsCount = 1
 
         for (i in 0 until startPopulationCount) {
+            println("Initializing model #$i")
             val model = Model()
-            for (l in 0..layersCount) {
+            for (l in 0 until layersCount) {
                 val nl = NeuronLayer()
                 when (l) {
                     0 -> {
@@ -43,7 +47,7 @@ fun main(args: Array<String>) {
                             nl.neurons.add(InputNeuron())
                         }
                     }
-                    layersCount -> {
+                    layersCount - 1 -> {
                         for (n in 0 until outputNeuronsCount) {
                             val on = OutputNeuron()
                             on.addPreviousNeurons(model.layers[l - 1].neurons) {
@@ -55,7 +59,7 @@ fun main(args: Array<String>) {
                     else -> {
                         for (n in 0 until internalNeuronsInLayer) {
                             val intN = InternalNeuron()
-                            //intN.t = SingleRandom.nextDouble() // default 1.0
+                            intN.t = 0.10 // default 1.0
                             intN.addPreviousNeurons(model.layers[l - 1].neurons) {
                                 PitchedFourierSeries.createFromRandom(activationLength)
                             }
@@ -68,19 +72,42 @@ fun main(args: Array<String>) {
             gs.population.add(model)
         }
 
-        val eSteps: Int = 10
+        val eSteps: Int = 1000
         var stepCounter = 0
         for (s in 0 until eSteps) {
             val errors = gs.calculateError().sortedBy { it.second }
-//            errors.forEachIndexed { index, pair ->
-//                println("$stepCounter::$index|> ${pair.second}")
-//            }
-            println("$stepCounter, ${errors[0].second}")
+            errors.forEachIndexed { index, pair ->
+                print("${pair.second}, ")
+            }
+            println()
+            //println("$stepCounter, ${errors[0].second}")
+            if (stepCounter % 500 == 0 || eSteps - 1 == stepCounter) {
+                val outSb = StringBuilder()
+                val start = -10.0
+                val stop = 10.0
+                val step = 0.1
+
+                var cur = start
+                while (cur <= stop) {
+                    val input = DoubleArray(1) { cur }
+                    val real = ds.function?.invoke(input)!!
+                    val predict = errors.first().first.calculate(input)
+
+                    outSb.appendln(
+                        "$cur, ${real}, ${predict[0]}, ${pow(real - predict[0], 2.0)}"
+                    )
+                    cur += step
+                }
+
+                val outResults = FileOutputStream("out$stepCounter.csv")
+                outResults.write(outSb.toString().toByteArray())
+            }
             gs.evolutionStep()
             stepCounter++
         }
 
-    } catch (e: Exception) {
+
+    } catch (e: Throwable) {
         println(e.message)
     }
 }

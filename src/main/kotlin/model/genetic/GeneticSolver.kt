@@ -5,7 +5,7 @@ import util.SingleRandom
 import java.lang.Math.pow
 
 class GeneticSolver {
-    companion object {
+    public companion object {
         var mutationRate: Double = 0.5
         var goodRatio: Double = 0.3
         var maxPopulation = 100
@@ -23,11 +23,11 @@ class GeneticSolver {
 //
             var error = 0.0
             dataset!!.dataPoints.forEach { datasetElement ->
-                error += model.calculate(datasetElement.inputs)[0] - datasetElement.output
+                error += pow(model.calculate(datasetElement.inputs)[0] - datasetElement.output, 2.0)
             }
 
             //Pair(model, pow(model.calculate(dataPoint.inputs)[0] - dataPoint.output, 2.0))
-            Pair(model, pow(error / dataset!!.dataPoints.size, 2.0))
+            Pair(model, (error / dataset!!.dataPoints.size))
         }
     }
     fun evolutionStep() {
@@ -43,9 +43,15 @@ class GeneticSolver {
         if (newPopulation.size > maxPopulation) {
             val pairs = Array<Pair<Model, Double>>(newPopulation.size) {
                 val model = newPopulation[it]
-                val dataPoint = (dataset ?: throw Exception("Dataset is null"))
-                    .dataPoints[SingleRandom.nextInt(dataset!!.dataPoints.size)]
-                Pair(model, pow(model.calculate(dataPoint.inputs)[0] - dataPoint.output, 2.0))
+//                val dataPoint = (dataset ?: throw Exception("Dataset is null"))
+//                    .dataPoints[SingleRandom.nextInt(dataset!!.dataPoints.size)]
+                var error = 0.0
+                dataset!!.dataPoints.forEach { datasetElement ->
+                    error += pow(model.calculate(datasetElement.inputs)[0] - datasetElement.output, 2.0)
+                }
+
+                Pair(model, (error / dataset!!.dataPoints.size))
+                //Pair(model, pow(model.calculate(dataPoint.inputs)[0] - dataPoint.output, 2.0))
             }
 
             pairs.sortBy {

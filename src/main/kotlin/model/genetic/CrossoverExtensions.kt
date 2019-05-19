@@ -18,7 +18,7 @@ fun Model.crossover(other: Model): Model {
     for (i in 1 until model.layers.size) {
         model.layers[i].neurons.forEach {
             if (it is ChainableNeuron) {
-                it.previousNeurons.addAll(layers[i - 1].neurons)
+                it.previousNeurons.addAll(model.layers[i - 1].neurons)
             }
         }
     }
@@ -44,11 +44,11 @@ private fun Neuron.crossover(other: Neuron): Neuron {
 
                 val neuron = InternalNeuron()
 
-                neuron.t =
-                    if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
-                        (this.t + other.t) / 2
-                    else
-                        SingleRandom.nextDouble()
+                //neuron.t =
+//                    if (SingleRandom.doubleZeroToOne() > GeneticSolver.mutationRate)
+//                        (this.t + other.t) / 2
+//                    else
+//                        neuron.t + SingleRandom.nextDouble()
 
 
                 val fhs = FourierHypersurface(activationFunction.arity) {
@@ -70,8 +70,8 @@ private fun Neuron.crossover(other: Neuron): Neuron {
 
                 for (i in 0 until this.weights.size) {
                     neuron.weights.add(
-                        if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
-                            (this.weights[i] + other.weights[i]) / 2
+                        if (SingleRandom.doubleZeroToOne() > GeneticSolver.mutationRate)
+                            (this.weights[i] + other.weights[i]) / 2 * SingleRandom.nextDouble()
                         else
                             SingleRandom.nextDouble()
                     )
@@ -103,8 +103,8 @@ private fun FourierSeries.crossover(other: FourierSeries): FourierSeries {
             val pfs = PitchedFourierSeries()
 
             pfs.pitch =
-                if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
-                    (this.pitch + other.pitch) / 2
+                if (SingleRandom.doubleZeroToOne() > GeneticSolver.mutationRate)
+                    (this.pitch + other.pitch) / 2 * SingleRandom.nextDouble()
                 else
                     SingleRandom.nextDouble()
 
@@ -115,12 +115,13 @@ private fun FourierSeries.crossover(other: FourierSeries): FourierSeries {
         for (i in 0 until this.elements.size) {
             fs.elements.add(
                 FourierElement(
-                    if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
-                        (this.elements[i].amplitude + other.elements[i].amplitude) / 2
+                    if (SingleRandom.doubleZeroToOne() > GeneticSolver.mutationRate)
+                        (this.elements[i].amplitude + other.elements[i].amplitude) / 2 * SingleRandom.nextDouble()
                     else
                         SingleRandom.nextDouble(),
-                    if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
-                        (this.elements[i].phase + other.elements[i].phase) / 2
+
+                    if (SingleRandom.doubleZeroToOne() > GeneticSolver.mutationRate)
+                        (this.elements[i].phase + other.elements[i].phase) / 2 * SingleRandom.nextDouble()
                     else
                         SingleRandom.nextDouble()
                 )

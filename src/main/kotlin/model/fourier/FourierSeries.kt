@@ -10,7 +10,7 @@ open class FourierSeries() : Visitable {
             FourierSeries(length).apply {
                 elements.forEach {
                     it.amplitude = SingleRandom.nextDouble()
-                    it.phase = SingleRandom.nextDouble()
+                    it.phase = SingleRandom.nextDouble() * if (SingleRandom.nextBoolean()) 1.0 else -1.0
                 }
             }
     }
