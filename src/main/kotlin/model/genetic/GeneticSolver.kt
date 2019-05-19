@@ -18,9 +18,16 @@ class GeneticSolver {
     fun calculateError(): Array<Pair<Model, Double>> {
         return Array<Pair<Model, Double>>(population.size) {
             val model = population[it]
-            val dataPoint = (dataset ?: throw Exception("Dataset is null"))
-                .dataPoints[SingleRandom.nextInt(dataset!!.dataPoints.size)]
-            Pair(model, pow(model.calculate(dataPoint.inputs)[0] - dataPoint.output, 2.0))
+//            val dataPoint = (dataset ?: throw Exception("Dataset is null"))
+//                .dataPoints[SingleRandom.nextInt(dataset!!.dataPoints.size)]
+//
+            var error = 0.0
+            dataset!!.dataPoints.forEach { datasetElement ->
+                error += model.calculate(datasetElement.inputs)[0] - datasetElement.output
+            }
+
+            //Pair(model, pow(model.calculate(dataPoint.inputs)[0] - dataPoint.output, 2.0))
+            Pair(model, pow(error / dataset!!.dataPoints.size, 2.0))
         }
     }
     fun evolutionStep() {
