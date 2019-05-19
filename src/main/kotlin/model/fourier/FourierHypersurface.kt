@@ -15,7 +15,7 @@ class FourierHypersurface() : Visitable {
 
     constructor(arity: Int, consumer: (Int) -> FourierSeries) : this() {
         dimensions.ensureCapacity(arity)
-        for (i in 0..arity) {
+        for (i in 0 until arity) {
             dimensions.add(consumer(i))
         }
     }

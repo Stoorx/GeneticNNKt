@@ -19,7 +19,7 @@ class GeneticSolver {
         return Array<Pair<Model, Double>>(population.size) {
             val model = population[it]
             val dataPoint = (dataset ?: throw Exception("Dataset is null"))
-                .dataPoints[SingleRandom.nextInt()]
+                .dataPoints[SingleRandom.nextInt(dataset!!.dataPoints.size)]
             Pair(model, pow(model.calculate(dataPoint.inputs)[0] - dataPoint.output, 2.0))
         }
     }

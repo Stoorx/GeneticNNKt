@@ -9,14 +9,14 @@ import util.SingleRandom
 
 fun Model.crossover(other: Model): Model {
     val model = Model()
-    for (i in 0..layers.size) {
+    for (i in 0 until layers.size) {
         model.layers.add(
             layers[i].crossover(other.layers[i])
         )
     }
 
-    for (i in 1..layers.size) {
-        layers[i].neurons.forEach {
+    for (i in 1 until model.layers.size) {
+        model.layers[i].neurons.forEach {
             if (it is ChainableNeuron) {
                 it.previousNeurons.addAll(layers[i - 1].neurons)
             }
@@ -27,7 +27,7 @@ fun Model.crossover(other: Model): Model {
 
 private fun NeuronLayer.crossover(other: NeuronLayer): NeuronLayer {
     val layer = NeuronLayer()
-    for (i in 0..neurons.size) {
+    for (i in 0 until neurons.size) {
         layer.neurons.add(
             neurons[i].crossover(other.neurons[i])
         )
@@ -62,7 +62,7 @@ private fun Neuron.crossover(other: Neuron): Neuron {
 
                 val neuron = OutputNeuron()
 
-                for (i in 0..this.weights.size) {
+                for (i in 0 until this.weights.size) {
                     neuron.weights.add(
                         if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
                             (this.weights[i] + other.weights[i]) / 2
@@ -106,7 +106,7 @@ private fun FourierSeries.crossover(other: FourierSeries): FourierSeries {
         }
 
 
-        for (i in 0..this.elements.size) {
+        for (i in 0 until this.elements.size) {
             fs.elements.add(
                 FourierElement(
                     if (SingleRandom.nextDouble() > GeneticSolver.mutationRate)
