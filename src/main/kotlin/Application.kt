@@ -14,8 +14,9 @@ import kotlin.math.log
 
 fun main() {
     try {
-        val ds = Dataset.generateFromFunction(DoubleArray(1) { -10.0 }, DoubleArray(1) { 10.0 }, 150) {
+        val ds = Dataset.generateFromFunction(DoubleArray(1) { -10.0 }, DoubleArray(1) { 10.0 }, 100) {
             val x = it[0]
+            //sin(x*2* PI/10)
             log(1 + pow(E, x), E) //1
             // pow(E, x) / cos(x)
             //sqrt(1 + 4 * x + 12 * x * x)
@@ -25,14 +26,14 @@ fun main() {
 
         val gs = GeneticSolver()
         gs.dataset = ds
-        GeneticSolver.maxPopulation = 100
-        GeneticSolver.mutationRate = 0.15
-        GeneticSolver.goodRatio = 0.40
+        GeneticSolver.maxPopulation = 300
+        GeneticSolver.mutationRate = 0.5
+        GeneticSolver.goodRatio = 0.47
 
-        val startPopulationCount = 20
-        val layersCount = 4
-        val internalNeuronsInLayer = 3
-        val activationLength = 3
+        val startPopulationCount = 50
+        val layersCount = 3
+        val internalNeuronsInLayer = 1
+        val activationLength = 8
         val inputNeuronsCount = 1
         val outputNeuronsCount = 1
 
@@ -59,7 +60,6 @@ fun main() {
                     else -> {
                         for (n in 0 until internalNeuronsInLayer) {
                             val intN = InternalNeuron()
-                            intN.t = 0.10 // default 1.0
                             intN.addPreviousNeurons(model.layers[l - 1].neurons) {
                                 PitchedFourierSeries.createFromRandom(activationLength)
                             }
@@ -76,16 +76,17 @@ fun main() {
         var stepCounter = 0
         for (s in 0 until eSteps) {
             val errors = gs.calculateError().sortedBy { it.second }
-            errors.forEachIndexed { index, pair ->
+            print("$stepCounter, ")
+            errors.forEachIndexed { _, pair ->
                 print("${pair.second}, ")
             }
             println()
             //println("$stepCounter, ${errors[0].second}")
-            if (stepCounter % 500 == 0 || eSteps - 1 == stepCounter) {
+            if (stepCounter % 250 == 0 || eSteps - 1 == stepCounter) {
                 val outSb = StringBuilder()
                 val start = -10.0
                 val stop = 10.0
-                val step = 0.1
+                val step = 0.5
 
                 var cur = start
                 while (cur <= stop) {
@@ -106,6 +107,20 @@ fun main() {
             stepCounter++
         }
 
+        val bestModel = gs.calculateError().sortedBy { it.second }.first().first
+        bestModel.layers.forEach {
+            it.neurons.forEach {
+                if (it is InternalNeuron) {
+                    it.activationFunction.dimensions.forEach {
+                        it.elements.forEach {
+                            print("${it} ")
+                        }
+                        println()
+                    }
+                }
+
+            }
+        }
 
     } catch (e: Throwable) {
         println(e.message)

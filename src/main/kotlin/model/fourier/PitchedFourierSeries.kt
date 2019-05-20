@@ -13,10 +13,12 @@ class PitchedFourierSeries : FourierSeries {
                     it.phase = SingleRandom.nextDouble()
                 }
                 pitch = SingleRandom.nextDouble()
+                b = SingleRandom.nextDouble()
             }
     }
 
     var pitch: Double = 0.0
+    var b: Double = 0.0
 
     constructor() : super()
     constructor(length: Int) : super(length)
@@ -26,7 +28,7 @@ class PitchedFourierSeries : FourierSeries {
     }
 
     override fun calculate(x: Double, t: Double): Double {
-        return super.calculate(x, t) + pitch * x
+        return super.calculate(x, t) + pitch * x + b
     }
 }
 

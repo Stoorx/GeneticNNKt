@@ -12,7 +12,7 @@ class InternalNeuron : ChainableNeuron() {
             inputCache = null
         }
 
-    var t: Double = 1.0
+    var t: Double = 20.0
 
     protected var inputCache: DoubleArray? = null
     protected var cachedResult: Double = 0.0
